@@ -1,13 +1,13 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds     #-}
 {-# LANGUAGE TypeOperators #-}
 
 module API1 where
 
-import Data.Aeson
-import Data.Time.Calendar
-import Servant
+import           Data.Aeson
+import           Data.Time.Calendar
+import           Servant
 
-import DataTypes (User(..))
+import           DataTypes          (User (..))
 
 type UserAPI1 = "users" :> Get '[JSON] [User]
 
