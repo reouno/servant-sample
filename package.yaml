@@ -26,9 +26,9 @@ library:
   source-dirs: src
   dependencies:
   - aeson
-  - servant >= 0.15 && < 0.16
   - servant-server >= 0.15 && < 0.16
   - text
+  - time
 
 executables:
   servant-sample-exe:
@@ -40,6 +40,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - servant-sample
+    - warp
 
 tests:
   servant-sample-test:
