@@ -1,10 +1,13 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module DataTypes where
 
 import           Data.Aeson
 import           Data.Time.Calendar
 import           GHC.Generics
+import           Lucid
 
 data User = User
     { name             :: String
@@ -45,3 +48,30 @@ data Email = Email
     } deriving (Eq, Generic, Show)
 
 instance ToJSON Email
+
+data Person = Person
+    { firstName :: String
+    , lastName  :: String
+    } deriving (Eq, Generic, Show)
+
+instance ToJSON Person
+
+-- HTML serialization of single person
+instance ToHtml Person where
+    toHtml person =
+        tr_ $ do
+            td_ (toHtml $ firstName person)
+            td_ (toHtml $ lastName person)
+
+    -- do not worry about this
+    toHtmlRaw = toHtml
+
+instance ToHtml [Person] where
+    toHtml persons = table_ $ do
+        tr_ $ do
+            th_ "first name"
+            th_ "last name"
+
+        foldMap toHtml persons
+
+    toHtmlRaw = toHtml

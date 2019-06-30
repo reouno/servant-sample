@@ -6,6 +6,7 @@ import           Servant
 import           API1       (UserAPI1, userAPI1, users1)
 import           API2       (UserAPI2, albert, isaac, userAPI2, users2)
 import           API3       (VarAPI3, emailForClient, varAPI3)
+import           API4       (PersonAPI4, people, personAPI4)
 import           DataTypes  (ClientInfo (..), Email (..), HelloMessage (..),
                              Position (..))
 
@@ -41,3 +42,9 @@ server3 = position
 
 app3 :: Application
 app3 = serve varAPI3 server3
+
+server4 :: Server PersonAPI4
+server4 = return people
+
+app4 :: Application
+app4 = serve personAPI4 server4
