@@ -26,6 +26,8 @@ library:
   source-dirs: src
   dependencies:
   - aeson
+  - bytestring
+  - directory
   - http-media
   - lucid
   - servant-server >= 0.15 && < 0.16
