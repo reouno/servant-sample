@@ -13,6 +13,8 @@ import           API2                   (UserAPI2, albert, isaac, userAPI2,
 import           API3                   (VarAPI3, emailForClient, varAPI3)
 import           API4                   (PersonAPI4, people, personAPI4)
 import           API5                   (IOAPI5, ioAPI5)
+import           API6                   (MayHeaderHandlerAPI6, albert6,
+                                         mayHeaderHandlerAPI6)
 import           DataTypes              (ClientInfo (..), Email (..),
                                          HelloMessage (..), Position (..))
 
@@ -66,3 +68,12 @@ server5 = do
 
 app5 :: Application
 app5 = serve ioAPI5 server5
+
+-- `b` is passed from request capturing "withHeader"
+server6 :: Server MayHeaderHandlerAPI6
+server6 b = return $ if b
+    then addHeader 1797 albert6
+    else noHeader albert6
+
+app6 :: Application
+app6 = serve mayHeaderHandlerAPI6 server6
