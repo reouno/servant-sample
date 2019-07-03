@@ -15,6 +15,7 @@ import           API4                   (PersonAPI4, people, personAPI4)
 import           API5                   (IOAPI5, ioAPI5)
 import           API6                   (MayHeaderHandlerAPI6, albert6,
                                          mayHeaderHandlerAPI6)
+import           API7                   (StaticAPI7, staticAPI7)
 import           DataTypes              (ClientInfo (..), Email (..),
                                          HelloMessage (..), Position (..))
 
@@ -77,3 +78,9 @@ server6 b = return $ if b
 
 app6 :: Application
 app6 = serve mayHeaderHandlerAPI6 server6
+
+server7 :: Server StaticAPI7
+server7 = serveDirectoryWebApp "static-files"
+
+app7 :: Application
+app7 = serve staticAPI7 server7
