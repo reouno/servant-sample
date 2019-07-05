@@ -16,8 +16,10 @@ import           API5                   (IOAPI5, ioAPI5)
 import           API6                   (MayHeaderHandlerAPI6, albert6,
                                          mayHeaderHandlerAPI6)
 import           API7                   (StaticAPI7, staticAPI7)
+import           API8                   (User2API8, UserAPI8, user2API8,
+                                         userAPI8)
 import           DataTypes              (ClientInfo (..), Email (..),
-                                         HelloMessage (..), Position (..))
+                                         HelloMessage (..), Position (..), User)
 
 server1 :: Server UserAPI1
 server1 = return users1
@@ -84,3 +86,30 @@ server7 = serveDirectoryWebApp "static-files"
 
 app7 :: Application
 app7 = serve staticAPI7 server7
+
+server8 :: Server UserAPI8
+server8 = getUser :<|> deleteUser
+    where
+        getUser :: Int -> Handler User
+        getUser _userid = error "getUesr..."
+
+        deleteUser :: Int -> Handler NoContent
+        deleteUser _userid = error "deleteUser..."
+
+app8 :: Application
+app8 = serve userAPI8 server8
+
+-- notice how getUser and deleteUser
+-- have a different type! no argument anymore,
+-- the argument directly goes to the whole Server
+server8' :: Server User2API8
+server8' userid = getUser userid :<|> deleteUser userid
+    where
+        getUser :: Int -> Handler User
+        getUser = error "getUser..."
+
+        deleteUser :: Int -> Handler NoContent
+        deleteUser = error "deleteUser..."
+
+app8' :: Application
+app8' = serve user2API8 server8'
