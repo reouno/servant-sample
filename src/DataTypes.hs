@@ -16,6 +16,7 @@ data User = User
     , registrationDate :: Day
     } deriving (Eq, Generic, Show)
 
+instance FromJSON User
 instance ToJSON User
 
 data Position = Position

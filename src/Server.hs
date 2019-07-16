@@ -18,6 +18,7 @@ import           API6                   (MayHeaderHandlerAPI6, albert6,
 import           API7                   (StaticAPI7, staticAPI7)
 import           API8                   (User2API8, UserAPI8, user2API8,
                                          userAPI8)
+import           API9                   (UsersAPI9, matrixUsers, usersAPI9)
 import           DataTypes              (ClientInfo (..), Email (..),
                                          HelloMessage (..), Position (..), User)
 
@@ -113,3 +114,31 @@ server8' userid = getUser userid :<|> deleteUser userid
 
 app8' :: Application
 app8' = serve user2API8 server8'
+
+server9 :: Server UsersAPI9
+server9 = getUsers :<|> newUser :<|> userOperations
+    where
+        getUsers :: Handler [User]
+        getUsers = return matrixUsers
+
+        newUser :: User -> Handler String
+        newUser user = return "receive post request to add new user"
+
+        userOperations userid =
+            viewUser userid :<|> updateUser userid :<|> deleteUser userid
+            where
+                viewUser :: Int -> Handler User
+                viewUser userid = return $ matrixUsers !! userid
+
+                updateUser :: Int -> User -> Handler String
+                updateUser userid user = return $
+                    "received PUT request to update the user with id = "
+                    ++ show userid
+
+                deleteUser :: Int -> Handler String
+                deleteUser userid = return $
+                    "received DELETE request with userid = "
+                    ++ show userid
+
+app9 :: Application
+app9 = serve usersAPI9 server9
