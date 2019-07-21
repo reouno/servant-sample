@@ -8,6 +8,7 @@ import           Servant
 import           System.Directory       (doesFileExist)
 
 import           API1                   (UserAPI1, userAPI1, users1)
+import           API10                  (APIFor, apiFor)
 import           API2                   (UserAPI2, albert, isaac, userAPI2,
                                          users2)
 import           API3                   (VarAPI3, emailForClient, varAPI3)
@@ -142,3 +143,16 @@ server9 = getUsers :<|> newUser :<|> userOperations
 
 app9 :: Application
 app9 = serve usersAPI9 server9
+
+server10For :: Handler [a]
+            -> Server (APIFor a)
+server10For viewData = viewData
+
+server10MatrixUsers :: Server (APIFor User)
+server10MatrixUsers = server10For viewUsers
+    where
+        viewUsers :: Handler [User]
+        viewUsers = return matrixUsers
+
+app10MatrixUsers :: Application
+app10MatrixUsers = serve apiFor server10MatrixUsers

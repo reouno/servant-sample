@@ -76,3 +76,12 @@ instance ToHtml [Person] where
         foldMap toHtml persons
 
     toHtmlRaw = toHtml
+
+data Product = Product
+    { productName :: String
+    , productStock :: Int
+    , productCategory :: String
+    } deriving (Eq, Generic, Show)
+
+instance FromJSON Product
+instance ToJSON Product
