@@ -1,10 +1,20 @@
 module Main where
 
-import           Network.Wai.Handler.Warp (run)
+import           Network.Wai.Handler.Warp       ( run )
 
-import           Server                   (app1, app10MatrixUsers, app2, app3,
-                                           app4, app5, app6, app7, app8, app8',
-                                           app9)
+import           Server                         ( app1
+                                                , app10MatrixUsers
+                                                , app2
+                                                , app3
+                                                , app4
+                                                , app5
+                                                , app6
+                                                , app7
+                                                , app8
+                                                , app8'
+                                                , app9
+                                                , app11MatrixUsers
+                                                )
 
 main :: IO ()
 --main = run 8081 app1
@@ -17,4 +27,5 @@ main :: IO ()
 --main = run 8081 app8
 --main = run 8081 app8'
 --main = run 8081 app9
-main = run 8081 app10MatrixUsers
+--main = run 8081 app10MatrixUsers
+main = run 8081 app11MatrixUsers
