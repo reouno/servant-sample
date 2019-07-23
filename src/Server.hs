@@ -17,6 +17,9 @@ import           API10                          ( APIFor
 import           API11                          ( API11For
                                                 , api11For
                                                 )
+import           API12                          ( API12For
+                                                , api12For
+                                                )
 import           API2                           ( UserAPI2
                                                 , albert
                                                 , isaac
@@ -54,6 +57,7 @@ import           DataTypes                      ( ClientInfo(..)
                                                 , Email(..)
                                                 , HelloMessage(..)
                                                 , Position(..)
+                                                , Product(..)
                                                 , User
                                                 )
 
@@ -71,17 +75,17 @@ app2 = serve userAPI2 server2
 
 server3 :: Server VarAPI3
 server3 = position :<|> hello :<|> marketing
-  where
-    position :: Int -> Int -> Handler Position
-    position x y = return (Position x y)
+ where
+  position :: Int -> Int -> Handler Position
+  position x y = return (Position x y)
 
-    hello :: Maybe String -> Handler HelloMessage
-    hello mname = return . HelloMessage $ case mname of
-        Nothing   -> "Hello annonymous coward."
-        Just name -> "Hello " ++ name ++ "."
+  hello :: Maybe String -> Handler HelloMessage
+  hello mname = return . HelloMessage $ case mname of
+    Nothing   -> "Hello annonymous coward."
+    Just name -> "Hello " ++ name ++ "."
 
-    marketing :: ClientInfo -> Handler Email
-    marketing clientInfo = return $ emailForClient clientInfo
+  marketing :: ClientInfo -> Handler Email
+  marketing clientInfo = return $ emailForClient clientInfo
 
 app3 :: Application
 app3 = serve varAPI3 server3
@@ -94,11 +98,9 @@ app4 = serve personAPI4 server4
 
 server5 :: Server IOAPI5
 server5 = do
-    exists <- liftIO (doesFileExist "myfile.html")
-    if exists
-        then liftIO (B.readFile "myfile.html")
-        else throwError custom404Err
-    where custom404Err = err404 { errBody = "myfile.html does not exist." }
+  exists <- liftIO (doesFileExist "myfile.html")
+  if exists then liftIO (B.readFile "myfile.html") else throwError custom404Err
+  where custom404Err = err404 { errBody = "myfile.html does not exist." }
 
 app5 :: Application
 app5 = serve ioAPI5 server5
@@ -118,12 +120,12 @@ app7 = serve staticAPI7 server7
 
 server8 :: Server UserAPI8
 server8 = getUser :<|> deleteUser
-  where
-    getUser :: Int -> Handler User
-    getUser _userid = error "getUesr..."
+ where
+  getUser :: Int -> Handler User
+  getUser _userid = error "getUesr..."
 
-    deleteUser :: Int -> Handler NoContent
-    deleteUser _userid = error "deleteUser..."
+  deleteUser :: Int -> Handler NoContent
+  deleteUser _userid = error "deleteUser..."
 
 app8 :: Application
 app8 = serve userAPI8 server8
@@ -133,40 +135,40 @@ app8 = serve userAPI8 server8
 -- the argument directly goes to the whole Server
 server8' :: Server User2API8
 server8' userid = getUser userid :<|> deleteUser userid
-  where
-    getUser :: Int -> Handler User
-    getUser = error "getUser..."
+ where
+  getUser :: Int -> Handler User
+  getUser = error "getUser..."
 
-    deleteUser :: Int -> Handler NoContent
-    deleteUser = error "deleteUser..."
+  deleteUser :: Int -> Handler NoContent
+  deleteUser = error "deleteUser..."
 
 app8' :: Application
 app8' = serve user2API8 server8'
 
 server9 :: Server UsersAPI9
 server9 = getUsers :<|> newUser :<|> userOperations
-  where
-    getUsers :: Handler [User]
-    getUsers = return matrixUsers
+ where
+  getUsers :: Handler [User]
+  getUsers = return matrixUsers
 
-    newUser :: User -> Handler String
-    newUser user = return "receive post request to add new user"
+  newUser :: User -> Handler String
+  newUser user = return "receive post request to add new user"
 
-    userOperations userid =
-        viewUser userid :<|> updateUser userid :<|> deleteUser userid
-      where
-        viewUser :: Int -> Handler User
-        viewUser userid = return $ matrixUsers !! userid
+  userOperations userid =
+    viewUser userid :<|> updateUser userid :<|> deleteUser userid
+   where
+    viewUser :: Int -> Handler User
+    viewUser userid = return $ matrixUsers !! userid
 
-        updateUser :: Int -> User -> Handler String
-        updateUser userid user =
-            return
-                $  "received PUT request to update the user with id = "
-                ++ show userid
+    updateUser :: Int -> User -> Handler String
+    updateUser userid user =
+      return
+        $  "received PUT request to update the user with id = "
+        ++ show userid
 
-        deleteUser :: Int -> Handler String
-        deleteUser userid =
-            return $ "received DELETE request with userid = " ++ show userid
+    deleteUser :: Int -> Handler String
+    deleteUser userid =
+      return $ "received DELETE request with userid = " ++ show userid
 
 app9 :: Application
 app9 = serve usersAPI9 server9
@@ -176,9 +178,9 @@ server10For viewData = viewData
 
 server10MatrixUsers :: Server (APIFor User)
 server10MatrixUsers = server10For viewUsers
-  where
-    viewUsers :: Handler [User]
-    viewUsers = return matrixUsers
+ where
+  viewUsers :: Handler [User]
+  viewUsers = return matrixUsers
 
 app10MatrixUsers :: Application
 app10MatrixUsers = serve apiFor server10MatrixUsers
@@ -188,12 +190,50 @@ server11For viewData addDatum = viewData :<|> addDatum
 
 server11MatrixUsers :: Server (API11For User Int)
 server11MatrixUsers = server11For viewUsers addUser
-  where
-    viewUsers :: Handler [User]
-    viewUsers = return matrixUsers
+ where
+  viewUsers :: Handler [User]
+  viewUsers = return matrixUsers
 
-    addUser :: User -> Handler Int
-    addUser user = return 100
+  addUser :: User -> Handler Int
+  addUser user = return 100
 
 app11MatrixUsers :: Application
 app11MatrixUsers = serve api11For server11MatrixUsers
+
+server12For
+  :: Handler [a]
+  -> (a -> Handler i)
+  -> (i -> Handler a)
+  -> (i -> a -> Handler Bool)
+  -> (i -> Handler Bool)
+  -> Server (API12For a i)
+server12For viewAll add view update delete = viewAll :<|> add :<|> operations
+  where operations id' = view id' :<|> update id' :<|> delete id'
+
+products :: [Product]
+products =
+  [ Product "MacBook Air" 1   "PC"
+  , Product "MacBook Pro" 100 "PC"
+  , Product "Chair"       3   "Furniture"
+  ]
+
+server12Products :: Server (API12For Product Int)
+server12Products = server12For viewProds add view update delete
+ where
+  viewProds :: Handler [Product]
+  viewProds = return products
+
+  add :: Product -> Handler Int
+  add prod = return 3
+
+  view :: Int -> Handler Product
+  view id' = return $ products !! id'
+
+  update :: Int -> Product -> Handler Bool
+  update id' prod = return True
+
+  delete :: i -> Handler Bool
+  delete id' = return True
+
+app12Products :: Application
+app12Products = serve api12For server12Products

@@ -4,6 +4,8 @@ import           Network.Wai.Handler.Warp       ( run )
 
 import           Server                         ( app1
                                                 , app10MatrixUsers
+                                                , app11MatrixUsers
+                                                , app12Products
                                                 , app2
                                                 , app3
                                                 , app4
@@ -13,7 +15,6 @@ import           Server                         ( app1
                                                 , app8
                                                 , app8'
                                                 , app9
-                                                , app11MatrixUsers
                                                 )
 
 main :: IO ()
@@ -28,4 +29,5 @@ main :: IO ()
 --main = run 8081 app8'
 --main = run 8081 app9
 --main = run 8081 app10MatrixUsers
-main = run 8081 app11MatrixUsers
+--main = run 8081 app11MatrixUsers
+main = run 8081 app12Products
