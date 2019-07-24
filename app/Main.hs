@@ -7,6 +7,7 @@ import           Server                         ( app1
                                                 , app11MatrixUsers
                                                 , app12Products
                                                 , app13UsersProds
+                                                , app14Reader
                                                 , app2
                                                 , app3
                                                 , app4
@@ -32,4 +33,5 @@ main :: IO ()
 --main = run 8081 app10MatrixUsers
 --main = run 8081 app11MatrixUsers
 --main = run 8081 app12Products
-main = run 8081 app13UsersProds
+--main = run 8081 app13UsersProds
+main = run 8081 app14Reader

@@ -2,6 +2,7 @@
 module Server where
 
 import           Control.Monad.IO.Class
+import           Control.Monad.Reader
 import           Data.Aeson
 import qualified Data.ByteString.Lazy          as B
 import           Servant
@@ -22,6 +23,10 @@ import           API12                          ( API12For
                                                 )
 import           API13                          ( UsersProdsAPI13
                                                 , usersProdsAPI13
+                                                )
+import           API14                          ( ReaderAPI14
+                                                , readerAPI14
+                                                , readerToHandler
                                                 )
 import           API2                           ( UserAPI2
                                                 , albert
@@ -284,3 +289,18 @@ serverUsersProdsAPI13 = usersOps :<|> productsOps :<|> emptyServer
 
 app13UsersProds :: Application
 app13UsersProds = serve usersProdsAPI13 serverUsersProdsAPI13
+
+serverTReaderAPI14 :: ServerT ReaderAPI14 (Reader String)
+serverTReaderAPI14 = a :<|> b
+ where
+  a :: Reader String Int
+  a = return 1979
+
+  b :: Double -> Reader String Bool
+  b _ = asks (== "hi")
+
+serverReaderAPI14 :: Server ReaderAPI14
+serverReaderAPI14 = hoistServer readerAPI14 readerToHandler serverTReaderAPI14
+
+app14Reader :: Application
+app14Reader = serve readerAPI14 serverReaderAPI14

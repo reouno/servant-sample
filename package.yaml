@@ -30,6 +30,7 @@ library:
   - directory
   - http-media
   - lucid
+  - mtl
   - servant-server >= 0.15 && < 0.16
   - text
   - time
