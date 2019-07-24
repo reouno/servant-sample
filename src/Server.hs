@@ -20,6 +20,9 @@ import           API11                          ( API11For
 import           API12                          ( API12For
                                                 , api12For
                                                 )
+import           API13                          ( UsersProdsAPI13
+                                                , usersProdsAPI13
+                                                )
 import           API2                           ( UserAPI2
                                                 , albert
                                                 , isaac
@@ -237,3 +240,47 @@ server12Products = server12For viewProds add view update delete
 
 app12Products :: Application
 app12Products = serve api12For server12Products
+
+serverUsersProdsAPI13 :: Server UsersProdsAPI13
+serverUsersProdsAPI13 = usersOps :<|> productsOps
+ where
+  usersOps    = viewUsers :<|> addUser :<|> userOps
+  productsOps = viewProducts :<|> addProduct :<|> productOps
+
+  viewUsers :: Handler [User]
+  viewUsers = return matrixUsers
+
+  addUser :: User -> Handler Int
+  addUser _ = return 123
+
+  userOps id' = viewUser id' :<|> updateUser id' :<|> deleteUser id'
+
+  viewUser :: Int -> Handler User
+  viewUser id' = return $ matrixUsers !! id'
+
+  updateUser :: Int -> User -> Handler Bool
+  updateUser _ _ = return True
+
+  deleteUser :: Int -> Handler Bool
+  deleteUser _ = return True
+
+  viewProducts :: Handler [Product]
+  viewProducts = return products
+
+  addProduct :: Product -> Handler Int
+  addProduct prod = return 999
+
+  productOps id' =
+    viewProduct id' :<|> updateProduct id' :<|> deleteProduct id'
+
+  viewProduct :: Int -> Handler Product
+  viewProduct id' = return $ products !! id'
+
+  updateProduct :: Int -> Product -> Handler Bool
+  updateProduct _ _ = return True
+
+  deleteProduct :: Int -> Handler Bool
+  deleteProduct _ = return True
+
+app13UsersProds :: Application
+app13UsersProds = serve usersProdsAPI13 serverUsersProdsAPI13
