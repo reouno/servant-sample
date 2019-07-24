@@ -242,7 +242,7 @@ app12Products :: Application
 app12Products = serve api12For server12Products
 
 serverUsersProdsAPI13 :: Server UsersProdsAPI13
-serverUsersProdsAPI13 = usersOps :<|> productsOps
+serverUsersProdsAPI13 = usersOps :<|> productsOps :<|> emptyServer
  where
   usersOps    = viewUsers :<|> addUser :<|> userOps
   productsOps = viewProducts :<|> addProduct :<|> productOps
